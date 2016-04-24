@@ -1,0 +1,121 @@
+﻿<Window x:Class="ChannelsMixer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ChannelsMixer"
+        xmlns:utils="clr-namespace:ChannelsMixer.Utils"
+        Title="Channels Mixer" Background="#282828"
+        Loaded="MainWindow_OnLoaded" Closing="MainWindow_OnClosing" 
+        MinWidth="500" MinHeight="300" ResizeMode="CanResizeWithGrip" AllowsTransparency="True" WindowStyle="None" BorderThickness="1" BorderBrush="#00A9DD"
+        MouseDown="MainWindow_OnMouseDown"
+        MouseDoubleClick="MainWindow_OnMouseDoubleClick">
+    <Window.Resources>
+        <ContextMenu x:Key="ContextMenu">
+            <MenuItem Header="RGBA channels" Command="{Binding}" />
+            <MenuItem Header="RGB channels" />
+            <Separator />
+            <MenuItem Header="R channel" />
+            <MenuItem Header="G channel" />
+            <MenuItem Header="B channel" />
+            <MenuItem Header="A channel" />
+        </ContextMenu>
+        <ImageBrush x:Key="BackgroundImageBrush"
+                    ImageSource="Resources/bg_transparent.png"
+                    TileMode="FlipXY" 
+                    Stretch="Uniform"
+                    AlignmentY="Top"
+                    Viewport="0,0,8,8"
+                    ViewportUnits="Absolute" />
+        <Style x:Key="ImageStyle" TargetType="Image">
+            
+        </Style>
+        <utils:EnumBooleanConverter x:Key="EnumBooleanConverter" />
+        <utils:PercentConverter x:Key="PercentConverter" />
+        <utils:MathConverter x:Key="MathConverter" />
+    </Window.Resources>
+    <!--<Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>-->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="0">
+            <StackPanel Orientation="Vertical">
+                <Expander Header=" Import / Export" IsExpanded="True">
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <Button Content="Import to viewport" Command="{Binding OpenImageCommand}" Margin="0,0,0,6"/>
+                        <Button Content="Export viewport" Command="{Binding SaveImageCommand}" IsEnabled="{Binding IsImageExist}" />
+                    </StackPanel>
+                </Expander>
+
+                <Expander Header=" Viewport" IsExpanded="False">
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <RadioButton Content="Default" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Default}" IsEnabled="{Binding IsImageExist}" />
+                        <RadioButton Content="Grayscale" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Grayscale}" IsEnabled="{Binding IsImageExist}" />
+                        <RadioButton Content="Grayscale &amp; Alpha" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=GrayscaleWithAlpha}" IsEnabled="{Binding IsImageExist}" />
+                        <Separator />
+                        <RadioButton Content="Red channel" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=RedChannel}" IsEnabled="{Binding IsImageExist}" />
+                        <RadioButton Content="Green channel" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=GreenChannel}" IsEnabled="{Binding IsImageExist}" />
+                        <RadioButton Content="Blue channel" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=BlueChannel}" IsEnabled="{Binding IsImageExist}" />
+                        <RadioButton Content="Alpha channel" IsChecked="{Binding Path=ActiveChannel, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=AlphaChannel}" IsEnabled="{Binding IsImageExist}" />
+                    </StackPanel>
+                </Expander>
+
+                <Expander Header=" Replace" IsExpanded="False">
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <Button Content="Replace Red channel" Command="{Binding ReplaceRedChannelCommand}" IsEnabled="{Binding IsImageExist}" Margin="0,0,0,6"/>
+                        <Button Content="Replace Green channel" Command="{Binding ReplaceGreenChannelCommand}" IsEnabled="{Binding IsImageExist}" Margin="0,0,0,6"/>
+                        <Button Content="Replace Blue channel" Command="{Binding ReplaceBlueChannelCommand}" IsEnabled="{Binding IsImageExist}" Margin="0,0,0,6"/>
+                        <Button Content="Replace Alpha channel" Command="{Binding ReplaceAlphaChannelCommand}" IsEnabled="{Binding IsImageExist}" />
+                    </StackPanel>
+                </Expander>
+
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Background="#1E1E1E" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="10" />
+                <ColumnDefinition Width="32*"
+                                  MaxWidth="{Binding ElementName=Image, Path=Source.Width}" />
+                <ColumnDefinition Width="*" MinWidth="10" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="10" />
+                <RowDefinition Height="32*"
+                               MaxHeight="{Binding ElementName=Image, Path=Source.Height}" />
+                <RowDefinition Height="*" MinHeight="10" />
+            </Grid.RowDefinitions>
+
+            <Border Background="{StaticResource BackgroundImageBrush}" Name="ImageBorder" Grid.Column="1" Grid.Row="1"
+                    MaxHeight="{Binding ElementName=Image, Path=ActualHeight}"
+                    MaxWidth="{Binding ElementName=Image, Path=ActualWidth}"
+                    BorderThickness="1" BorderBrush="Black">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" Color="Black" ShadowDepth="0" Opacity="1" />
+                </Border.Effect>
+            </Border>
+            <Image Name="Image" Grid.Column="1" Grid.Row="1"
+                   Source="{Binding Viewport}"
+                   Style="{StaticResource ImageStyle}" />
+        </Grid>
+        
+        
+        <TextBox Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10" IsReadOnly="True" >
+            <TextBox.Text>
+                <MultiBinding Converter="{StaticResource PercentConverter}" ConverterParameter="/">
+                    <Binding ElementName="Image" Path="ActualWidth" Mode="OneWay" />
+                    <Binding ElementName="Image" Path="Source.Width" Mode="OneWay" />
+                </MultiBinding>
+            </TextBox.Text>
+        </TextBox>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">
+            <!--<CheckBox Style="{StaticResource {x:Type ToggleButton}}" Margin="0,0,2,0" Width="30" Height="30" Padding="8" Background="Transparent">
+                <Path Stretch="Fill" Fill="#00A9DD" Data="M481.354,263.904v166.979c0,28.88-23.507,52.369-52.387,52.369H53.646c-28.889,0-52.393-23.489-52.393-52.369V55.969   c0-28.877,23.504-52.372,52.393-52.372h167.428c-9.014,9.247-15.004,21.45-16.319,35.007H53.64c-9.582,0-17.377,7.79-17.377,17.365   v374.914c0,9.575,7.796,17.366,17.377,17.366h375.322c9.581,0,17.378-7.791,17.378-17.366V280.199   C459.515,278.935,471.744,273.267,481.354,263.904z M277.895,52.52h114.456L207.086,237.79c-10.255,10.249-10.255,26.882,0,37.132   c10.252,10.255,26.879,10.255,37.131,0.006L429.482,89.657v114.462c0,14.502,11.756,26.256,26.261,26.256   c7.247,0,13.813-2.929,18.566-7.687c4.752-4.764,7.689-11.319,7.689-18.569V26.256C481.999,11.754,470.249,0,455.743,0H277.895   c-14.499,0-26.256,11.754-26.256,26.262C251.633,40.764,263.396,52.52,277.895,52.52z"/>
+            </CheckBox>-->
+            <Button Width="30" Height="30" Padding="8" Click="CloseButton_OnClick">
+                <Polygon Stretch="Fill" Fill="#00A9DD" Points="357,35.7 321.3,0 178.5,142.8 35.7,0 0,35.7 142.8,178.5 0,321.3 35.7,357 178.5,214.2 321.3,357 357,321.3 214.2,178.5"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

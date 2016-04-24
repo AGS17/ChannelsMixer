@@ -1,0 +1,17 @@
+﻿<Application x:Class="ChannelsMixer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ChannelsMixer"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+         <ResourceDictionary>
+             <ResourceDictionary.MergedDictionaries>
+                 <ResourceDictionary Source="Resources/MetroDark/MetroDark.MSControls.Core.Implicit.xaml" />
+                 <ResourceDictionary Source="Resources/MetroDark/MetroDark.MSControls.Toolkit.Implicit.xaml" />
+                 <ResourceDictionary Source="Resources/MetroDark/Styles.Shared.xaml" />
+                 <ResourceDictionary Source="Resources/MetroDark/Styles.WPF.xaml" />
+                 <ResourceDictionary Source="Resources/MetroDark/Theme.Colors.xaml" />
+             </ResourceDictionary.MergedDictionaries>
+         </ResourceDictionary>
+    </Application.Resources>
+</Application>

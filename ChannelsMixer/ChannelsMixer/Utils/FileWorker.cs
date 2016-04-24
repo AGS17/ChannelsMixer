@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Data;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using TargaImage;
 
 namespace ChannelsMixer.Utils
 {
@@ -10,45 +10,11 @@ namespace ChannelsMixer.Utils
     {
         public static BitmapSource OpenImage(FileInfo fileInfo)
         {
-            //using (var fs = fileInfo.OpenRead())
-            //{
-            //    BitmapDecoder decoder = null;
-
-            //    switch (fileInfo.Extension)
-            //    {
-            //        case ".tga":
-            //            break;
-            //        case ".jpg":
-            //        case ".jpeg":
-            //            decoder = new JpegBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            //            break;
-            //        case ".png":
-            //            decoder = new PngBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            //            break;
-            //        case ".tiff":
-            //            decoder = new TiffBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            //            break;
-            //        case ".gif":
-            //            decoder = new GifBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            //            break;
-            //        case ".bmp":
-            //            decoder = new BmpBitmapDecoder(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            //            break;
-            //        default:
-            //            throw new NotSupportedException($"File extension {fileInfo.Extension} not supported");
-            //    }
-
-            //    BitmapSource bitmap = null;
-
-            //    if (decoder?.Frames.Count > 0)
-            //        bitmap = decoder.Frames[0];
-
-            //}
-
             switch (fileInfo.Extension)
             {
                 case ".tga":
-                    return Ultima.Package.Tga.FromFile(fileInfo.FullName).GetImageAsBitmapSource();
+                    var targa = new TgaImage(fileInfo.FullName);
+                    return targa.BitmapSourceImage;
                 case ".jpg":
                 case ".jpeg":
                 case ".png":
@@ -71,7 +37,8 @@ namespace ChannelsMixer.Utils
                 switch (fileInfo.Extension)
                 {
                     case ".tga":
-                        break;
+                        //var targa = new TargaImage(source.CopyPixels());
+                        return;
                     case ".jpg":
                     case ".jpeg":
                         encoder = new JpegBitmapEncoder();

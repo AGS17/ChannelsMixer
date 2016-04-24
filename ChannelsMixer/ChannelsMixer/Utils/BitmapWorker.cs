@@ -175,7 +175,7 @@ namespace ChannelsMixer.Utils
 
         // ------------------------------ PRIVATE ------------------------------ //
 
-        public static BitmapSource CloneWithDifferentSize(BitmapSource source, double width, double height)
+        private static BitmapSource CloneWithDifferentSize(BitmapSource source, double width, double height)
         {
             var rect = new Rect(0, 0, width, height);
 
@@ -197,7 +197,7 @@ namespace ChannelsMixer.Utils
         private static byte CalculateAverageByte(byte red, byte green, byte blue, byte alpha)
             => (byte) ((blue + green + red) / 3 * alpha / 255);
 
-        private static byte[] ToBytes(BitmapSource source)
+        public static byte[] ToBytes(BitmapSource source)
         {
             int strideRow = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
             var pixels = new byte[source.PixelHeight * strideRow];

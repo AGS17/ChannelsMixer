@@ -7,8 +7,8 @@ using System.Windows.Media.Imaging;
 using ChannelsMixer.Core;
 using ChannelsMixer.Utils;
 using ChannelsMixer.Utils.Commands;
-using FreeImageAPI;
 using Microsoft.Win32;
+using TargaImage;
 
 namespace ChannelsMixer
 {
@@ -72,6 +72,14 @@ namespace ChannelsMixer
 
         public MainWindowViewModel()
         {
+            //var targa = new TgaImage(@"C:\Users\AGS17PC\Desktop\var1.tga");
+            //this.Bitmap = targa.BitmapSourceImage;
+            //using (var ms = new MemoryStream(BitmapWorker.ToBytes(this.Bitmap)))
+            //{
+            //    var newss = new TgaImage(ms);
+            //    this.Bitmap = newss.BitmapSourceImage;
+            //}
+
             this.OpenImageCommand = new SimpleCommand(this.OpenImageAction);
             this.SaveImageCommand = new SimpleCommand(this.SaveImageAction);
             this.ReplaceRedChannelCommand = new SimpleCommand(this.ReplaceRedChannelAction);
@@ -98,6 +106,7 @@ namespace ChannelsMixer
         {
             var stringBuilder = new StringBuilder();
             foreach (var extension in this.SupportedFileExtensions)
+                if (extension != "*.tga") // TODO add the tga saving
                 stringBuilder.Append($"{extension}|{extension}|");
             return stringBuilder.ToString(0, stringBuilder.Length - 1);
         }
